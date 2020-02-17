@@ -1,7 +1,7 @@
 const express = require('express')
 const path = require('path')
 
-var port = process.env.PORT || 5005;
+var port = process.env.PORT || 8080;
 let app = express()
 let server = require('http').createServer(app);
 app.use(express.static(__dirname + '/'));
