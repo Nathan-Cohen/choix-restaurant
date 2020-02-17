@@ -1,6 +1,6 @@
 const express = require('express')
 const path = require('path')
-const {MongoClient} = require('mongodb');
+var MongoClient = require('mongodb').MongoClient;
 
 var port = process.env.PORT || 5005;
 let app = express()
@@ -8,7 +8,6 @@ let server = require('http').createServer(app);
 app.use(express.static(__dirname + '/'));
 
 //////////////BASE DE DONNEE////////////////
-var MongoClient = require('mongodb').MongoClient;
 
 // Connect to the db
 MongoClient.connect("mongodb://heroku_tzdttpft:<vinil75020>@ds131041.mlab.com:31041/heroku_tzdttpft", function (err, db) {
