@@ -11,7 +11,7 @@ app.use(express.static(__dirname + '/'));
 var MongoClient = require('mongodb').MongoClient;
 
 // Connect to the db
-MongoClient.connect("mongodb://<dbuser>:<dbpassword>@ds131041.mlab.com:31041/heroku_tzdttpft", function (err, db) {
+MongoClient.connect("mongodb://heroku_tzdttpft:<vinil75020>@ds131041.mlab.com:31041/heroku_tzdttpft", function (err, db) {
    
     db.collection('Persons', function (err, collection) {
         
