@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Random</title>
+        <link rel="stylesheet" href="https://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.css" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+        <script src="https://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.js"></script>
+        <!-- <script type="text/javascript" src="assets/js/ui.js"></script> -->
+        <!-- JQUERY -->
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <!-- BOOTSTRAP -->
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+        <!-- ANGULARJS -->
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.4/angular.min.js"></script>
+
+        <!-- LOGO FONT AWESOME -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
+        <!-- BOOTSTRAP -->
+        <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"> -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+        <!-- module et controller -->
+        <script src="./controllers/controllers-pages.js"></script>
+
+        <!-- style personnaliser -->
+        <link rel="stylesheet" href="./css/style.css">
+    </head>
+<body class="container" ng-app="monApp">
+
+    <div data-role="page" id="page-one" data-title="Random" ng-controller="page1" ng-keypress="randomEnter($event)">
+        <div data-role="header" data-theme="b" id="header">
+            <h1>Choix</h1>
+            <a ng-click="afficheListe()" href="#page-two" data-icon="arrow-r" data-iconpos="right" data-corners="false" data-transition="pop" data-theme="c">Ajouter a la liste</a>
+        </div>
+        <div data-role="content" id="body">
+          <!-- <h2>Je vais manger </h2> -->
+          <div id="divResult"></div>
+          <button ng-click="btnRandom()" data-corners="false" class="ui-btn ui-shadow">Random</button>
+
+          <div id="totalResultatRandom"><p id="occurenceElements" ng-repeat="elements in occurenceTab"><strong>{{elements[0]}}</strong> : {{elements[1]}}</p> </div>
+        
+        </div>
+        <div data-role="footer" data-theme="b" id="footer">
+            Copyright 2018
+        </div>
+    </div>
+
+
+
+
+    <div data-role="page" id="page-two" data-title="Liste" ng-controller="page2">
+        <div data-role="header" data-theme="b" id="header">
+            <h1>Liste</h1>
+            <a id="faireChoix" ng-click="faireChoix" href="#page-one" data-icon="home" data-iconpos="right" data-corners="false" data-transition="pop" data-theme="c">Faire un choix</a>
+        </div>
+        <div data-role="content" id="body">
+            <span id="enCours"><strong>{{keyRestauration}}</strong></span>
+
+            <input id="restauration" type="text" ng-model="keyRestauration" data-corners="false" ng-keypress="ajouterEnter($event)" placeholder="Ajouter a la liste..">
+            <button ng-click="ajouter()" data-corners="false" type="submit">Ajouter</button>
+
+            <div id="listeDesRestaurants"><p ng-repeat="elem in myTabNote track by $index" ng-if="elem != ''">- {{elem}} <a ng-click="deleteOne(this.elem)" class="delete"> <i class='fas fa-times-circle'></i></a></p></div>
+
+            <button ng-click="SupprimerTout()" data-corners="false" type="submit">Supprimer la liste entière</button>
+            
+        </div>
+        <div data-role="footer" data-theme="b" id="footer">
+            Copyright 2018
+        </div>
+    </div>
+
+</body>
+</html>
+
+

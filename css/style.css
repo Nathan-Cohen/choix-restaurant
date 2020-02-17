@@ -1,0 +1,119 @@
+/* header */
+
+#header{
+  background-color: #4285f4;
+  background-image: none;
+  border: none;
+  padding: 5px;
+}
+
+h1{
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* body */
+#body{
+  background: #f9f9f9;
+  background-image: none;
+  font-size: 16px
+}
+
+.ui-content{
+  margin-bottom: 20px;
+}
+
+/* loading */
+.line {
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  border-radius: 15px;
+  background-color: #4b9cdb;
+  margin: 1px
+}
+
+
+.load .line:nth-last-child(1) {animation: loadingC .4s .1s linear infinite;}
+.load .line:nth-last-child(2) {animation: loadingC .4s .2s linear infinite;}
+.load .line:nth-last-child(3) {animation: loadingC .4s .3s linear infinite;}
+
+@keyframes loadingC {
+  0% {transform: translate(0,0);}
+  50% {transform: translate(0,15px);}
+  100% {transform: translate(0,0);}
+}
+
+.btn-circle.btn-xl {
+    width: 100px;
+    height: 100px;
+    padding: 20px 26px;
+    font-size: 24px;
+    line-height: 1.33;
+    border-radius: 35px;
+  } 
+
+  /* end loading */
+
+  #divResult{
+    font-size: 20px;
+    margin: auto;
+    display: table;
+  }
+
+  #totalResultatRandom{
+    display: table;
+    margin: auto;
+  }
+
+  .loadResult{
+    display: none;
+  }
+
+  #occurenceElements{
+    float: left;
+    margin-right: 30px;
+    border: 1px solid #cecece;
+    padding: 5px;
+  }
+
+  input.ui-input-text, textarea.ui-input-text{
+    width: 100%;
+  }
+
+  #enCours{
+    margin-left: 49%;
+    font-size: 20px
+  }
+  
+  #listeDesRestaurants{
+    border: 1px solid #cecece;
+    padding: 10px;
+  }
+
+  a:hover{
+    text-decoration: none
+  }
+  .ui-btn-hidden{
+    line-height: 10;
+  }
+
+  .delete{
+    cursor: pointer;
+  }
+
+
+  /* footer */
+
+  #footer{
+    background-color: #4285f4;
+    background-image: none;
+    border: none;
+    padding: 5px;
+  }
+
+  .ui-footer {
+      position:absolute !important;
+      width:100%;
+      bottom:0;
+  }

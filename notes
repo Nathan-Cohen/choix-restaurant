@@ -1,0 +1,24 @@
+
+- Compter le nombre de fois sur lequel sa tombe
+
+LocalStorage : 
+
+X Possibiliter de supprimer un restaurant
+
+X Possibiliter d'ajouter un restaurant
+
+X Enregistrer la liste en local (localstorage)
+
+X afficher la liste depuis le localstorage
+
+
+Websocket : 
+
+- Attendre les deux connexions
+
+- Une fois que les deux connexions sont presente chacun appuie sur le button random tant que les deux utilisateurs n'ont pas cliquer il attent
+
+
+Design :
+
+- Mettre un defilement sur le tableau pour voir ce qu'il y a dedans
