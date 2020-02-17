@@ -17,7 +17,7 @@ var MongoClient = mongodb.MongoClient;
 // Connection URL. This is where your mongodb server is running.
 
 //(Focus on This Variable)
-var url = 'mongodb://heroku_tzdttpft:vinil75020@ds131041.mlab.com:31041/heroku_tzdttpft';      
+var url = 'mongodb://heroku_tzdttpft:vinil75020@ds131041.mlab.com:31041/heroku_tzdttpft?authSource=admin';      
 //(Focus on This Variable)
 
 // Use connect method to connect to the Server
