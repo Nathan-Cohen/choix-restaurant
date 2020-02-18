@@ -26,16 +26,19 @@ var url = 'mongodb://heroku_tzdttpft:vinil75020@ds131041.mlab.com:31041/heroku_t
     console.log('Unable to connect to the mongoDB server. Error:', err);
   } else {
     console.log('Connection established to', url);
-
-    // do some work here with the database.
-
-    //Close connection
-    db.close();
+    var dbo = db.db("heroku_tzdttpft");
+    var myobj = { name: "Company Inc", address: "Highway 37" };
+    dbo.collection("Persons").insertOne(myobj, function(err, res) {
+      if (err) throw err;
+      console.log("1 document inserted");
+      db.close();
+    });
   }
 });
 
 //////////////// ROUTES //////////////
 app.get('/', function(req, res) {
+    console.log('tessssssssssssssssssssssssssssssssssssssssssssssssssssssssssst')
     res.sendFile(path.join(__dirname, 'random.html'));
 });
 
