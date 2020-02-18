@@ -7,8 +7,7 @@ let server = require('http').createServer(app);
 app.use(express.static(__dirname + '/'));
 
 //////////////BASE DE DONNEE////////////////
-var mongodb = require('mongodb');
-var MongoClient = mongodb.MongoClient;
+var mongo = require('mongodb').MongoClient;
 var url = 'mongodb://heroku_hntk9vw8:hka5cie9qfqfa7lithhtjphcft@ds251849.mlab.com:51849/heroku_hntk9vw8';      
 
 
