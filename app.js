@@ -17,19 +17,24 @@ app.get('/', function(req, res) {
     console.log('tessssssssssssssssssssssssssssssssssssssssssssssssssssssssssst')
     res.sendFile(path.join(__dirname, 'random.html'));
 
-    // Use connect method to connect to the Server
-      MongoClient.connect(url, {useNewUrlParser: true}, function (err, db) {
-      if (err) {
-        console.log('Unable to connect to the mongoDB server. Error:', err);
-      } else {
-        console.log('Connection established to', url);
-        var myobj = { name: "Company Inc", address: "Highway 37" };
-        db.db.collection("Persons").insertOne(myobj, function(err, res) {
-          if (err) throw err;
-          console.log("1 document inserted");
-          db.close();
-        });
-      }
+    mongo.connect(url, {useNewUrlParser: true}, function(err, client) {
+        if(err){
+          console.log('err', err)
+        }
+        else{
+            console.log("Connexion a la base reussi");
+            const collection = client.db('heroku_hntk9vw8').collection('Persons');
+            collection.insertOne({nom: "cohen", prenom: "nathan", mail: "manathane.test@test.com"}, function(err, o) {
+                if(err){
+                    console.log(err.message);
+                    res.send({message: 'Erreur'});
+                    client.close();
+                }
+                else{
+                    console.log("1 inserer!!!!!!!!!!!!!!!!!");
+                }
+            })
+        }
     });
 });
 
