@@ -17,7 +17,7 @@ var MongoClient = mongodb.MongoClient;
 // Connection URL. This is where your mongodb server is running.
 
 //(Focus on This Variable)
-var url = 'mongodb://heroku_tzdttpft:vinil75020@ds131041.mlab.com:31041/heroku_tzdttpft?authSource=admin';      
+var url = 'mongodb://heroku_tzdttpft:vinil75020@ds131041.mlab.com:31041/heroku_tzdttpft';      
 //(Focus on This Variable)
 
 // Use connect method to connect to the Server
@@ -26,9 +26,8 @@ var url = 'mongodb://heroku_tzdttpft:vinil75020@ds131041.mlab.com:31041/heroku_t
     console.log('Unable to connect to the mongoDB server. Error:', err);
   } else {
     console.log('Connection established to', url);
-    var dbo = db.db("heroku_tzdttpft");
     var myobj = { name: "Company Inc", address: "Highway 37" };
-    dbo.collection("Persons").insertOne(myobj, function(err, res) {
+    MongoClient.collection("Persons").insertOne(myobj, function(err, res) {
       if (err) throw err;
       console.log("1 document inserted");
       db.close();
