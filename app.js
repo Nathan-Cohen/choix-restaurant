@@ -9,7 +9,7 @@ app.use(express.static(__dirname + '/'));
 //////////////BASE DE DONNEE////////////////
 var mongodb = require('mongodb');
 var MongoClient = mongodb.MongoClient;
-var url = 'mongodb://heroku_tzdttpft:vinil75020@ds131041.mlab.com:31041/heroku_tzdttpft';      
+var url = 'mongodb://heroku_hntk9vw8:hka5cie9qfqfa7lithhtjphcft@ds251849.mlab.com:51849/heroku_hntk9vw8';      
 
 
 //////////////// ROUTES //////////////
@@ -18,7 +18,7 @@ app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname, 'random.html'));
 
     // Use connect method to connect to the Server
-      MongoClient.connect(url, function (err, db) {
+      MongoClient.connect(url, {useNewUrlParser: true}, function (err, db) {
       if (err) {
         console.log('Unable to connect to the mongoDB server. Error:', err);
       } else {
