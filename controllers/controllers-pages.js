@@ -69,66 +69,129 @@ m.controller('page1', function($scope, $rootScope){
 });
 
 
-m.controller('page2', function($scope, $rootScope){
+m.controller('page2', function($scope, $rootScope, $http){
     var divResult = document.getElementById('divResult');  
     $scope.listeDesRestaurants = document.getElementById('listeDesRestaurants')
     
 
-    $scope.funcStorage = function(restauration){
+    $scope.listePropositions = function(restauration){
+        $scope.myTabNote = []
         // si restauration est egale a 'charger' on affiche la table
         if(restauration == 'charger'){
-            // si un enregistrement local a deja ete effectuer
-            if(localStorage.notes){
-                $scope.myTabNote = localStorage.notes.split(',');
-                $scope.myTabNote.pop()                
-            }
+                // recupere les propositions dans la base 
+                $http({
+                    url: "/recupereProposition",
+                    method: 'POST',
+                    data: {tabValeurs: restauration}
+                }).then(function (httpResponse) {            
+                    // si un message d'erreur est envoyer par le serveur
+                    if(httpResponse.data.message == 'Erreur'){
+                        console.log('Echec')
+                    }
+                    // sinon la proposition a bien ete enregistrer
+                    else{
+                        for (var i=0; i<httpResponse.data.propositions.length; i++){
+                            $scope.myTabNote.push(httpResponse.data.propositions[i].proposition)
+                        }
+                        console.log($scope.myTabNote)
+                    }
+                });           
+         
         }
         else{
             // supprime la valeur du champ
             document.getElementById('restauration').value = '';
-            if(localStorage.notes){
-                // ajoute la note au tableau local
-                localStorage.notes += restauration + ',';
-                // separe les notes dans un tableau
-                $scope.myTabNote = localStorage.notes.split(',');
-                $scope.myTabNote.pop()
-                
-            }else{
-                localStorage.notes = restauration + ',';
-                $scope.myTabNote = localStorage.notes.split(',');
-                $scope.myTabNote.pop()
-                
-            }
+
+            // // recupere les propositions dans la base 
+            $http({
+                url: "/recupereProposition",
+                method: 'POST',
+                data: {tabValeurs: restauration}
+            }).then(function (httpResponse) {            
+                // si un message d'erreur est envoyer par le serveur
+                if(httpResponse.data.message == 'Erreur'){
+                    console.log('Echec')
+                }
+                // sinon la proposition a bien ete enregistrer
+                else{
+                    for (var i=0; i<httpResponse.data.propositions.length; i++){
+                        $scope.myTabNote.push(httpResponse.data.propositions[i].proposition)
+                    }
+                    console.log($scope.myTabNote)
+                }
+            });
+             
         }
     }
-    $scope.funcStorage('charger');
+    $scope.listePropositions('charger');
 
     // au clique sur le boutton ajouter on ajoute le mot dans le tableau et dans la div puis on supprime la valeur du champ    
     $scope.ajouter = function(){
         var restauration = document.getElementById('restauration').value;
-        $scope.funcStorage(restauration);
-        $rootScope.occurenceTab.splice(0, $rootScope.occurenceTab.length)
-        
+        $scope.listePropositions(restauration);
+        // envoie le champ en base de donnees
+        $http({
+            url: "/envoieProposition",
+            method: 'POST',
+            data: {tabValeurs: restauration}
+        }).then(function (httpResponse) {            
+            // si un message d'erreur est envoyer par le serveur
+            if(httpResponse.data.message == 'Erreur'){
+                console.log('Echec')
+            }
+            // sinon la proposition a bien ete enregistrer
+            else{
+                console.log('Proposition enregistrer')
+                $scope.listePropositions('charger');
+            }
+        });
     }
 
     // au clique sur la touche "Entrer" on ajoute le mot dans le tableau et dans la div puis on supprime la valeur du champ
     $scope.ajouterEnter = function(e) {
         if(e.which == 13){
-        var restauration = document.getElementById('restauration').value;
-        $scope.funcStorage(restauration);  
-        $rootScope.occurenceTab.splice(0, $rootScope.occurenceTab.length)
-        $rootScope.randomEnCours.splice(0, $rootScope.randomEnCours.length)
-        
+            var restauration = document.getElementById('restauration').value;
+            $scope.listePropositions(restauration);  
+            // envoie le champ en base de donnees
+            $http({
+                url: "/envoieProposition",
+                method: 'POST',
+                data: {tabValeurs: restauration}
+            }).then(function (httpResponse) {    
+                console.log(httpResponse.data)        
+                // si un message d'erreur est envoyer par le serveur
+                if(httpResponse.data.message == 'Erreur'){
+                    console.log('Echec')
+                }
+                // sinon la proposition a bien ete enregistrer
+                else{
+                    console.log('Proposition enregistrer')
+                }
+            });
         
         }
     }
 
     // supprimer la liste entiere
     $scope.SupprimerTout = function(){
-        localStorage.clear();
-        $scope.myTabNote.splice(0, $scope.myTabNote.length)
-        $rootScope.occurenceTab.splice(0, $rootScope.occurenceTab.length)
-        $rootScope.randomEnCours.splice(0, $rootScope.randomEnCours.length)
+
+        // envoie le champ en base de donnees
+        $http({
+            url: "/supprimerToutesPropositions",
+            method: 'POST',
+            data: {tabValeurs: "ToutSupprimer"}
+        }).then(function (httpResponse) {            
+            // si un message d'erreur est envoyer par le serveur
+            if(httpResponse.data.message == 'Erreur'){
+                console.log('Echec')
+            }
+            // sinon la proposition a bien ete enregistrer
+            else{
+                console.log('Proposition supprimer')
+                $scope.myTabNote = []
+            }
+        });
+        
         divResult.innerHTML = ''
     }
 
