@@ -68,7 +68,7 @@
         <div data-role="content" id="body">
             <span id="enCours"><strong>{{keyRestauration}}</strong></span>
 
-            <input id="restauration" type="text" ng-model="keyRestauration" data-corners="false" ng-keypress="ajouterEnter($event)" placeholder="Ajouter a la liste..">
+            <input id="proposition" type="text" ng-model="keyRestauration" data-corners="false" ng-keypress="ajouterEnter($event)" placeholder="Ajouter a la liste..">
             <button ng-click="ajouter()" data-corners="false" type="submit">Ajouter</button>
 
             <div id="listeDesRestaurants"><p ng-repeat="elem in myTabNote track by $index" ng-if="elem != ''">- {{elem}} <a ng-click="deleteOne(this.elem)" class="delete"> <i class='fas fa-times-circle'></i></a></p></div>

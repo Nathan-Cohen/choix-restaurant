@@ -60,7 +60,7 @@ app.post('/recupereProposition', function(req, res){
                     client.close();
                 }
                 else{
-                    console.log("1 proposition inserer");
+                    console.log("Recuperation des propositions reussi");
                     // Envoie la reponse
                     res.send({propositions: o});
                 }
@@ -86,7 +86,7 @@ app.post('/supprimerToutesPropositions', function(req, res){
                     client.close();
                 }
                 else{
-                    console.log("Succes");
+                    console.log("Suppression de toutes les propositions reussi");
                     // Envoie la reponse
                     res.send({propositions: o});
                 }
@@ -94,5 +94,33 @@ app.post('/supprimerToutesPropositions', function(req, res){
         }
     });
 });
+
+
+app.post('/supprimerUneProposition', function(req, res){
+    console.log(req.body.propositionSupprimer)
+    // connexion a la base
+    mongo.connect(url, {useNewUrlParser: true, useUnifiedTopology: true}, function(err, client) {
+        if(err){
+          console.log('err', err)
+        }
+        else{
+            console.log("Connexion a la base reussi");
+            const collection = client.db('heroku_hntk9vw8').collection('Persons');
+            collection.deleteOne({proposition: req.body.propositionSupprimer}, function(err, o) {
+                if(err){
+                    console.log(err.message);
+                    res.send({message: 'Erreur'});
+                    client.close();
+                }
+                else{
+                    console.log("Suppression de la proposition reussi");
+                    // Envoie la reponse
+                    res.send({propositions: "succes"});
+                }
+            });
+        }
+    });
+});
+
 
 server.listen(port);
