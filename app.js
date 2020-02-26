@@ -1,13 +1,17 @@
 const express = require('express')
 const path = require('path')
 var bodyParser = require('body-parser')
+var socketIO = require('socket.io');
 
 var port = process.env.PORT || 5005;
 let app = express()
 let server = require('http').createServer(app);
+var io = socketIO(server);
+
 app.use(express.static(__dirname + '/'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use("/socket", express.static(path.join(__dirname + "/node_modules/socket.io-client/dist/")));
 
 //////////////BASE DE DONNEE////////////////
 var mongo = require('mongodb').MongoClient;
@@ -120,6 +124,18 @@ app.post('/supprimerUneProposition', function(req, res){
             });
         }
     });
+});
+
+
+// Websocket
+var tabConnection = [];
+io.on('connection', function(socket){
+    tabConnection.push(socket);
+    console.log('tabConnection');
+
+    socket.on('connecter', function(data){
+        console.log('tessssssssssst iooooooo')
+    })
 });
 
 
