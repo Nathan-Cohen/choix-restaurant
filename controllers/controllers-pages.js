@@ -158,6 +158,7 @@ m.controller('page2', function($scope, $rootScope, $http){
             // sinon la proposition a bien ete enregistrer
             else{
                 console.log('Proposition supprimer')
+                $('#totalResultatRandom').css('display', 'none')
             }
         });
         
