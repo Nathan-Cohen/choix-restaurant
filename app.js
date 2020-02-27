@@ -133,9 +133,28 @@ io.on('connection', function(socket){
     tabConnection.push(socket);
     console.log('tabConnection');
 
-    socket.on('connecter', function(data){
-        console.log('tessssssssssst iooooooo')
+    socket.on('btnRandom', function(data){
+        console.log('test btnRandom', data.randomEnCours)
+        function countOccurences(tab){
+            var result = {};
+            tab.forEach(function(elem){
+                if(elem in result){
+                    result[elem] = ++result[elem];
+                }
+                else{
+                    result[elem] = 1;
+                }
+            });
+            occurenceTab = Object.keys(result).map(function(key) {
+                return [key, result[key]];
+              });
+            //   envoie a tous les clients connecter le tableau des propositions traiter dans la fonction countOccurences
+            io.emit('retourBtnRandom', {occurenceTab: occurenceTab});
+        }
+        countOccurences(data.randomEnCours)
+
     })
+    
 });
 
 

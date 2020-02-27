@@ -8,78 +8,54 @@ m.controller('page1', function($scope, $rootScope){
     var listeVide = '<p>Liste vide</p>';
 
     (function(window, io){
-        window.addEventListener('DOMContentLoaded', function(){
+        window.addEventListener('load', function(){
             var socket = io();
-
-            socket.on('connection', function (data) {
-                socket.emit('connecter', data)
+                 
+        
+            function loading(item){
+                // ajoute les bars de chargements
+                divResult.innerHTML = '<div class="line"></div><div class="line"></div><div class="line"></div>'
+                // ajoute la class load
+                $('#divResult').addClass('load')
+                // cache la div des resultats du nombre d'occurences
+                $('#totalResultatRandom').css('display', 'none')
+                
+                var load = Math.floor(Math.random() * (200 - 500 + 1)) + 500;
+                var timeLoad = setTimeout(function(){
+                    // affiche le resultat dans la div resultat
+                    divResult.innerHTML = '<strong>' + item + '</strong>';
+                    // supprime la class load            
+                    $('#divResult').removeClass('load')
+                    // affiche la div des resultats du nombre d'occurence
+                    $('#totalResultatRandom').css('display', 'table')            
+                }, load);
+            }
+        
+            // au clique sur la touche bouton random on ajoute le mot dans le tableau et dans la div puis on supprime la valeur du champ
+            $scope.btnRandom = function(e){   
+                if($scope.$$nextSibling.myTabNote && $scope.$$nextSibling.myTabNote.length > 0 || e && e.which == 13 && $scope.$$nextSibling.myTabNote && $scope.$$nextSibling.myTabNote.length > 0){
+                    var randomItem = $scope.$$nextSibling.myTabNote[Math.floor(Math.random()*$scope.$$nextSibling.myTabNote.length)]; 
+                    console.log('test randomItem', randomItem)
+                    $rootScope.randomEnCours.push(randomItem);                            
+                    // envoie la proposition au serveur
+                    socket.emit('btnRandom', {randomEnCours: $rootScope.randomEnCours})
+                    
+                    // countOccurences($rootScope.randomEnCours)
+                    // loading(randomItem)
+                }else{
+                    divResult.innerHTML = listeVide;
+                }
+            }
+            // tous les clients recupere la proposition
+            socket.on('retourBtnRandom', function(data){
+                console.log('test retour btnRandom', $rootScope.occurenceTab)
+                $scope.$apply(() => $rootScope.occurenceTab = data.occurenceTab)
             })
+        
+
         })
     })(window, io);
     
-    function countOccurences(tab){
-        var result = {};
-        tab.forEach(function(elem){
-            if(elem in result){
-                result[elem] = ++result[elem];
-            }
-            else{
-                result[elem] = 1;
-            }
-        });
-        $rootScope.occurenceTab = Object.keys(result).map(function(key) {
-            return [key, result[key]];
-          });
-    }      
-
-    function loading(item){
-        // ajoute les bars de chargements
-        divResult.innerHTML = '<div class="line"></div><div class="line"></div><div class="line"></div>'
-        // ajoute la class load
-        $('#divResult').addClass('load')
-        // cache la div des resultats du nombre d'occurences
-        $('#totalResultatRandom').css('display', 'none')
-        
-        var load = Math.floor(Math.random() * (200 - 500 + 1)) + 500;
-        var timeLoad = setTimeout(function(){
-            // affiche le resultat dans la div resultat
-            divResult.innerHTML = '<strong>' + item + '</strong>';
-            // supprime la class load            
-            $('#divResult').removeClass('load')
-            // affiche la div des resultats du nombre d'occurence
-            $('#totalResultatRandom').css('display', 'table')            
-        }, load);
-    }
-
-    // au clique sur la touche bouton random on ajoute le mot dans le tableau et dans la div puis on supprime la valeur du champ
-    $scope.btnRandom = function(){   
-        if($scope.$$nextSibling.myTabNote && $scope.$$nextSibling.myTabNote.length > 0){
-            var randomItem = $scope.$$nextSibling.myTabNote[Math.floor(Math.random()*$scope.$$nextSibling.myTabNote.length)]; 
-            console.log('test randomItem', randomItem)
-            console.log('test myTabNote', $scope.$$nextSibling.myTabNote)
-            $rootScope.randomEnCours.push(randomItem);                            
-            countOccurences($rootScope.randomEnCours)
-            loading(randomItem)
-        }else{
-            divResult.innerHTML = listeVide;
-        }
-    }
-
-    // au clique sur la touche "Entrer" on ajoute le mot dans le tableau et dans la div puis on supprime la valeur du champ
-    $scope.randomEnter = function(e) {
-        if(e.which == 13){
-            if($scope.$$nextSibling.myTabNote && $scope.$$nextSibling.myTabNote.length > 0){
-                var randomItem = $scope.$$nextSibling.myTabNote[Math.floor(Math.random()*$scope.$$nextSibling.myTabNote.length)];
-                console.log('test randomItem', randomItem)
-                console.log('test myTabNote', $scope.$$nextSibling.myTabNote)
-                $rootScope.randomEnCours.push(randomItem);                                
-                countOccurences($rootScope.randomEnCours)
-                loading(randomItem)
-            }else{
-                divResult.innerHTML = listeVide;
-            }
-        }
-    }
 });
 
 
