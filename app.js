@@ -83,8 +83,40 @@ io.on('connection', function(socket){
     console.log('tabConnection');
 
     // clique sur le bouton random
+    socket.on('btnRandomProposition', function(data){
+        // recupere les propositions
+        // connexion a la base
+        mongo.connect(url, {useNewUrlParser: true, useUnifiedTopology: true}, function(err, client) {
+            if(err){
+            console.log('err', err)
+            }
+            else{
+                console.log("Connexion a la base reussi");
+                const collection = client.db('heroku_hntk9vw8').collection('Persons');
+                collection.find().toArray(function(err, o) {
+                    if(err){
+                        console.log(err.message);
+                        res.send({message: 'Erreur'});
+                        client.close();
+                    }
+                    else{
+                        console.log("Recuperation des propositions reussi");
+                        // Envoie la reponse
+                        var randomItem = o[Math.floor(Math.random()*o.length)].proposition; 
+                        // envoie la proposition prise au hasard
+                        io.emit('retourBtnRandomProposition', {randomItem: randomItem});
+                        
+                    }
+                });
+            }
+        });
+    })
+
     socket.on('btnRandom', function(data){
         console.log('test btnRandom', data.randomEnCours)
+
+        
+
         function countOccurences(tab){
             var result = {};
             tab.forEach(function(elem){
