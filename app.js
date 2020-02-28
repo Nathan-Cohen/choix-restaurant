@@ -23,30 +23,6 @@ app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname, 'random.html'));
 });
 
-app.post('/envoieProposition', function(req, res){
-    // connexion a la base
-    mongo.connect(url, {useNewUrlParser: true, useUnifiedTopology: true}, function(err, client) {
-        if(err){
-          console.log('err', err)
-        }
-        else{
-            console.log("Connexion a la base reussi");
-            const collection = client.db('heroku_hntk9vw8').collection('Persons');
-            collection.insertOne({proposition: req.body.tabValeurs}, function(err, o) {
-                if(err){
-                    console.log(err.message);
-                    res.send({message: 'Erreur'});
-                    client.close();
-                }
-                else{
-                    console.log("1 proposition inserer");
-                    // Envoie la reponse
-                    res.send({message: "Ok"});
-                }
-            });
-        }
-    });
-});
 
 app.post('/recupereProposition', function(req, res){
     // connexion a la base
@@ -72,33 +48,6 @@ app.post('/recupereProposition', function(req, res){
         }
     });
 });
-
-
-app.post('/supprimerToutesPropositions', function(req, res){
-    // connexion a la base
-    mongo.connect(url, {useNewUrlParser: true, useUnifiedTopology: true}, function(err, client) {
-        if(err){
-          console.log('err', err)
-        }
-        else{
-            console.log("Connexion a la base reussi");
-            const collection = client.db('heroku_hntk9vw8').collection('Persons');
-            collection.drop(function(err, o) {
-                if(err){
-                    console.log(err.message);
-                    res.send({message: 'Erreur'});
-                    client.close();
-                }
-                else{
-                    console.log("Suppression de toutes les propositions reussi");
-                    // Envoie la reponse
-                    res.send({propositions: o});
-                }
-            });
-        }
-    });
-});
-
 
 app.post('/supprimerUneProposition', function(req, res){
     console.log(req.body.propositionSupprimer)
@@ -133,6 +82,7 @@ io.on('connection', function(socket){
     tabConnection.push(socket);
     console.log('tabConnection');
 
+    // clique sur le bouton random
     socket.on('btnRandom', function(data){
         console.log('test btnRandom', data.randomEnCours)
         function countOccurences(tab){
@@ -153,6 +103,84 @@ io.on('connection', function(socket){
         }
         countOccurences(data.randomEnCours)
 
+    })
+
+
+
+    socket.on('envoieProposition', function(data){
+        console.log("data.tabValeurs", data.tabValeurs)
+        // connexion a la base
+        mongo.connect(url, {useNewUrlParser: true, useUnifiedTopology: true}, function(err, client) {
+            if(err){
+            console.log('err', err)
+            }
+            else{
+                console.log("Connexion a la base reussi");
+                const collection = client.db('heroku_hntk9vw8').collection('Persons');
+                collection.insertOne({proposition: data.tabValeurs}, function(err, o) {
+                    if(err){
+                        console.log(err.message);
+                        io.emit('retourEnvoieProposition', {retourBtnRandom: "Erreur"});
+                        client.close();
+                    }
+                    else{
+                        console.log("1 proposition inserer");
+                        // Envoie la reponse
+                        io.emit('retourEnvoieProposition', {retourBtnRandom: "Succes"});
+                    }
+                });
+            }
+        });
+    })
+
+    socket.on('supprimerToutesPropositions', function(data){
+        // connexion a la base
+        mongo.connect(url, {useNewUrlParser: true, useUnifiedTopology: true}, function(err, client) {
+            if(err){
+            console.log('err', err)
+            }
+            else{
+                console.log("Connexion a la base reussi");
+                const collection = client.db('heroku_hntk9vw8').collection('Persons');
+                collection.drop(function(err, o) {
+                    if(err){
+                        console.log(err.message);
+                        io.emit('retourSupprimerToutesPropositions', {retourSupprimerToutesPropositions: "Erreur"});
+                        client.close();
+                    }
+                    else{
+                        console.log("Suppression de toutes les propositions reussi");
+                        // Envoie la reponse
+                        io.emit('retourSupprimerToutesPropositions', {retourSupprimerToutesPropositions: "Succes"});
+                    }
+                });
+            }
+        });
+    })
+
+    socket.on('supprimerUneProposition', function(data){
+        // connexion a la base
+        mongo.connect(url, {useNewUrlParser: true, useUnifiedTopology: true}, function(err, client) {
+            if(err){
+            console.log('err', err)
+            }
+            else{
+                console.log("Connexion a la base reussi");
+                const collection = client.db('heroku_hntk9vw8').collection('Persons');
+                collection.deleteOne({proposition: data.propositionSupprimer}, function(err, o) {
+                    if(err){
+                        console.log(err.message);
+                        io.emit('retourSupprimerUneProposition', {retourSupprimerUneProposition: "Erreur"});
+                        client.close();
+                    }
+                    else{
+                        console.log("Suppression de la proposition reussi");
+                        // Envoie la reponse
+                        io.emit('retourSupprimerUneProposition', {retourSupprimerUneProposition: "Succes"});
+                    }
+                });
+            }
+        });
     })
     
 });

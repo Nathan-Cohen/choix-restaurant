@@ -92,94 +92,65 @@ m.controller('page2', function($scope, $rootScope, $http){
     }
     $scope.listePropositions('charger');
 
-    // au clique sur le boutton ajouter on ajoute le mot dans le tableau et dans la div puis on supprime la valeur du champ    
-    $scope.ajouter = function(){
-        // recupere la valeur du champ proposition
-        var proposition = document.getElementById('proposition').value;
-        // vide le champ proposition
-        document.getElementById('proposition').value = '';
-        // envoie le champ en base de donnees
-        $http({
-            url: "/envoieProposition",
-            method: 'POST',
-            data: {tabValeurs: proposition}
-        }).then(function (httpResponse) {            
-            // si un message d'erreur est envoyer par le serveur
-            if(httpResponse.data.message == 'Erreur'){
-                console.log('Echec')
-            }
-            // sinon la proposition a bien ete enregistrer
-            else{
-                console.log('Proposition enregistrer')
-                $scope.listePropositions('charger');
-            }
-        });
-    }
 
-    // au clique sur la touche "Entrer" on ajoute le mot dans le tableau et dans la div puis on supprime la valeur du champ
-    $scope.ajouterEnter = function(e) {
-        if(e.which == 13){
-            var proposition = document.getElementById('proposition').value;
-            // vide le champ proposition
-            document.getElementById('proposition').value = '';
-            // envoie le champ en base de donnees
-            $http({
-                url: "/envoieProposition",
-                method: 'POST',
-                data: {tabValeurs: proposition}
-            }).then(function (httpResponse) {    
-                console.log(httpResponse.data)        
-                // si un message d'erreur est envoyer par le serveur
-                if(httpResponse.data.message == 'Erreur'){
-                    console.log('Echec')
+    (function(window, io){
+        window.addEventListener('load', function(){
+            var socket = io();
+
+            // au clique sur le boutton ajouter on envoie la proposition puis on supprime la valeur du champ    
+            $scope.ajouter = function(){
+                // recupere la valeur du champ proposition
+                var proposition = document.getElementById('proposition').value;
+                // vide le champ proposition
+                document.getElementById('proposition').value = '';
+                socket.emit('envoieProposition', {tabValeurs: proposition});
+            }
+            
+            // au clique sur la touche "Entrer" on envoie la proposition et on supprime la valeur du champ
+            $scope.ajouterEnter = function(e) {
+                if(e.which == 13){
+                    var proposition = document.getElementById('proposition').value;
+                    // vide le champ proposition
+                    document.getElementById('proposition').value = '';
+                    socket.emit('envoieProposition', {tabValeurs: proposition});
+                    
                 }
-                // sinon la proposition a bien ete enregistrer
-                else{
-                    console.log('Proposition enregistrer')
+            }
+            // recharge la liste des propositions apres un ajout pour tout les utilisateurs
+            socket.on('retourEnvoieProposition', function(data){
+                if(data.retourBtnRandom == "Succes"){
                     $scope.listePropositions('charger');
                 }
-            });
+            })
         
-        }
-    }
-
-    // supprimer la liste entiere
-    $scope.SupprimerTout = function(){
-        $scope.myTabNote = []
-        // envoie le champ en base de donnees
-        $http({
-            url: "/supprimerToutesPropositions",
-            method: 'POST'
-        }).then(function (httpResponse) {            
-            // si un message d'erreur est envoyer par le serveur
-            if(httpResponse.data.message == 'Erreur'){
-                console.log('Echec')
+            // supprimer la liste entiere
+            $scope.SupprimerTout = function(){
+                $scope.myTabNote = []
+                socket.emit('supprimerToutesPropositions', {myTabNote: []});
+                
             }
-            // sinon la proposition a bien ete enregistrer
-            else{
-                console.log('Proposition supprimer')
-                $('#totalResultatRandom').css('display', 'none')
-            }
-        });
+            // recharge la liste des propositions apres une suppression de toutes les propositions pour tout les utilisateurs
+            socket.on('retourSupprimerToutesPropositions', function(data){
+                if(data.retourSupprimerToutesPropositions == "Succes"){
+                    $scope.listePropositions('charger');
+                    divResult.innerHTML = ''
+                }
+            })
         
-        divResult.innerHTML = ''
-    }
+            // supprime une proposition
+            $scope.deleteOne = function(element){
+                socket.emit('supprimerUneProposition', {propositionSupprimer: element});
+            }
+            // recharge la liste des propositions apres une suppression d'une propositions pour tout les utilisateurs
+            socket.on('retourSupprimerUneProposition', function(data){
+                if(data.retourSupprimerUneProposition == "Succes"){
+                    $scope.listePropositions('charger');
+                }
+            })
 
-    // DELETE ONE
-    $scope.deleteOne = function(element){
-        $http({
-            url: '/supprimerUneProposition',
-            method: 'POST',
-            data: {propositionSupprimer: element}
-        }).then(function (httpResponse){
-            if(httpResponse.data.message == 'Erreur'){
-                console.log('Echec')
-            }
-            else{
-                console.log('Proposition supprimer')
-                $scope.listePropositions('charger');
-            }
-        });
-    }
+
+        })
+    })(window, io);
+
 
 })
